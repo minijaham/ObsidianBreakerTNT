@@ -34,9 +34,9 @@ class Main extends PluginBase implements Listener
         if ($entity instanceof PrimedTNT) {
             $pos    = $entity->getPosition();
             $center = $entity->getWorld()->getBlockAt(
-                intval($pos->getFloorX()),
-                intval($pos->getFloorY()),
-                intval($pos->getFloorZ())
+                $pos->getFloorX(),
+                $pos->getFloorY(),
+                $pos->getFloorZ()
             );
 
             // Cancel TNT Explosion in water
@@ -74,9 +74,9 @@ class Main extends PluginBase implements Listener
                 $this->obsidian = array_filter($this->obsidian, function ($object) {
                     if($object->getCount() >= $this->getConfig()->getNested("hit-count")) {
                         $object->getPosition()->getWorld()->setBlockAt(
-                            intval($object->getPosition()->getX()),
-                            intval($object->getPosition()->getY()),
-                            intval($object->getPosition()->getZ()),
+                            $object->getPosition()->getFloorX(),
+                            $object->getPosition()->getFloorY(),
+                            $object->getPosition()->getFloorZ(),
                             VanillaBlocks::AIR()
                         );
                         return false; // returning false will remove the ObsidianData from the array
