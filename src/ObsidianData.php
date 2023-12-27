@@ -10,18 +10,18 @@ use pocketmine\world\Position;
 final class ObsidianData
 {
     /**
-	 * ObsidianData Constructor.
-	 *
-	 * @param Block $block
+     * ObsidianData Constructor.
+     *
+     * @param Block $block
      * @param int $count
-	 *
-	 */
-	public function __construct(
+     *
+     */
+    public function __construct(
         private Block $block,
         private int $count = 1
-	){}
+    ){}
 
-	public function getBlock() : Block
+    public function getBlock() : Block
     {
         return $this->block;
     }
