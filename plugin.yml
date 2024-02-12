@@ -1,6 +1,6 @@
 ---
 name: ObsidianBreakerTNT
-version: 0.0.1
+version: 0.0.2
 main: minijaham\ObsidianBreakerTNT\Main
 api: 5.10.0
 src-namespace-prefix: minijaham\ObsidianBreakerTNT
