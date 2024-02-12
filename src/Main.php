@@ -32,11 +32,10 @@ class Main extends PluginBase implements Listener
         $entity = $event->getEntity();
 
         if ($entity instanceof PrimedTNT) {
-            $pos    = $entity->getPosition();
             $center = $entity->getWorld()->getBlockAt(
-                $pos->getFloorX(),
-                $pos->getFloorY(),
-                $pos->getFloorZ()
+                $entity->getPosition()->getFloorX(),
+                $entity->getPosition()->getFloorY(),
+                $entity->getPosition()->getFloorZ()
             );
 
             // Cancel TNT Explosion in water
@@ -44,12 +43,7 @@ class Main extends PluginBase implements Listener
                 return;
             }
 
-            $affected = [];
-
-            // Get blocks from all side of the PrimedTNT
-            for ($i = 0; $i <= 6; $i++) {
-                $affected[] = $center->getSide($i);
-            }
+            $affected = array_map(fn($i) => $center->getSide($i), range(0, 6));
 
             foreach ($affected as $block) {
                 // If block isn't obsidian
@@ -58,31 +52,14 @@ class Main extends PluginBase implements Listener
                 }
 
                 // If ObsidianData already exists, then add count if it does.
-                $found = false;
-                foreach ($this->obsidian as $obsidianData) {
-                    if ($obsidianData->getPosition()->equals($block->getPosition())) {
-                        $obsidianData->addCount();
-                        $found = true;
-                    }
-                }
-
-                // If ObsidianData doesn't exist, create a new one
-                if (!$found) {
+                $obsidianData = $this->getObsidianData($block);
+                if ($obsidianData) {
+                    $obsidianData->addCount();
+                } else {
                     $this->obsidian[] = new ObsidianData($block);
                 }
 
-                $this->obsidian = array_filter($this->obsidian, function ($object) {
-                    if($object->getCount() >= $this->getConfig()->getNested("hit-count")) {
-                        $object->getPosition()->getWorld()->setBlockAt(
-                            $object->getPosition()->getFloorX(),
-                            $object->getPosition()->getFloorY(),
-                            $object->getPosition()->getFloorZ(),
-                            VanillaBlocks::AIR()
-                        );
-                        return false; // returning false will remove the ObsidianData from the array
-                    }
-                    return true;
-                });
+                $this->obsidian = array_filter($this->obsidian, [$this, 'filterObsidianData']);
             }
         }
     }
@@ -92,13 +69,32 @@ class Main extends PluginBase implements Listener
      */
     public function onBlockBreak(BlockBreakEvent $event) : void
     {
-        $block = $event->getBlock();
+        $this->obsidian = array_filter(
+            $this->obsidian, fn($object) => !$object->getPosition()->equals($event->getBlock()->getPosition())
+        );
+    }
 
-        $this->obsidian = array_filter($this->obsidian, (function ($object) use ($block) {
-            if($object->getPosition()->equals($block->getPosition())) {
-                return false; // returning false will remove the ObsidianData from the array
+    private function getObsidianData(Block $block) : ?ObsidianData
+    {
+        foreach ($this->obsidian as $obsidianData) {
+            if ($obsidianData->getPosition()->equals($block->getPosition())) {
+                return $obsidianData;
             }
-            return true;
-        }));
+        }
+        return null;
+    }
+
+    private function filterObsidianData(ObsidianData $object) : bool
+    {
+        if($object->getCount() >= $this->getConfig()->getNested("hit-count")) {
+            $object->getPosition()->getWorld()->setBlockAt(
+                $object->getPosition()->getFloorX(),
+                $object->getPosition()->getFloorY(),
+                $object->getPosition()->getFloorZ(),
+                VanillaBlocks::AIR()
+            );
+            return false; // returning false will remove the ObsidianData from the array
+        }
+        return true;
     }
 }
