@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace minijaham\ObsidianBreakerTNT;
 
-use pocketmine\block\Block;
+use pocketmine\block\Opaque;
 use pocketmine\world\Position;
 
 final class ObsidianData
@@ -12,18 +12,18 @@ final class ObsidianData
     /**
      * ObsidianData Constructor.
      *
-     * @param Block $block
+     * @param Opaque $obsidian
      * @param int $count
      *
      */
     public function __construct(
-        private Block $block,
+        private Opaque $obsidian,
         private int $count = 1
     ){}
 
-    public function getBlock() : Block
+    public function getBlock() : Opaque
     {
-        return $this->block;
+        return $this->obsidian;
     }
 
     public function getPosition() : Position
