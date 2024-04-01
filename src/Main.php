@@ -7,6 +7,7 @@ namespace minijaham\ObsidianBreakerTNT;
 use pocketmine\plugin\PluginBase;
 
 use pocketmine\block\Water;
+use pocketmine\block\Opaque;
 use pocketmine\block\VanillaBlocks;
 
 use pocketmine\entity\object\PrimedTNT;
@@ -74,10 +75,10 @@ class Main extends PluginBase implements Listener
         );
     }
 
-    private function getObsidianData(Block $block) : ?ObsidianData
+    private function getObsidianData(Opaque $obsidian) : ?ObsidianData
     {
         foreach ($this->obsidian as $obsidianData) {
-            if ($obsidianData->getPosition()->equals($block->getPosition())) {
+            if ($obsidianData->getPosition()->equals($obsidian->getPosition())) {
                 return $obsidianData;
             }
         }
