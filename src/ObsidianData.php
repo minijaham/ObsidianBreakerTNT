@@ -28,7 +28,7 @@ final class ObsidianData
 
     public function getPosition() : Position
     {
-        return $this->block->getPosition();
+        return $this->obsidian->getPosition();
     }
 
     public function getCount() : int
