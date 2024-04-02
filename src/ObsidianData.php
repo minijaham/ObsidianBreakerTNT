@@ -19,6 +19,7 @@ final class ObsidianData
     public function __construct(
         private Opaque $obsidian,
         private int $count = 1
+        private $block;
     ){}
 
     public function getBlock() : Opaque
