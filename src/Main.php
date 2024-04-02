@@ -57,7 +57,7 @@ class Main extends PluginBase implements Listener
                 if ($obsidianData) {
                     $obsidianData->addCount();
                 } else {
-                    $this->obsidian[] = new ObsidianData($block);
+                    $this->obsidian[] = new ObsidianData($block, $block->getPosition());
                 }
 
                 $this->obsidian = array_filter($this->obsidian, [$this, 'filterObsidianData']);
